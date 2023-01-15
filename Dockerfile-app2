@@ -1,0 +1,12 @@
+FROM python:3.10.5-alpine 
+ENV OIDC_CLIENT_SECRET $OIDC_CLIENT_SECRET
+EXPOSE 8082
+COPY project2 /opt
+WORKDIR /opt
+RUN pip3 install -U pipenv \
+    && pipenv install Pipfile  \
+    && pipenv requirements > requirements.txt \
+    && pip install -r requirements.txt
+RUN python3 manage.py migrate
+ENTRYPOINT ["python3"] 
+CMD ["manage.py", "runserver", "0.0.0.0:8082"]
